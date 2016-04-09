@@ -1,0 +1,7 @@
+Lucas Marques 0 300 West 20th Street 10 20.0 11/1/1993 2/6/2010 2/5/2010
+Ana Aparecida 10 100 West 4th Street 11 21.0 11/1/1993 2/6/2010 2/4/2015
+Joao Francisco 2 100 West 5th Street 13 24.0 11/2/1994 2/6/2010 2/4/2015
+Carlos Soares 3 100 West 6th Street 14 25.0 11/2/1994 2/6/2010 2/4/2015
+Pedro Henrique 4 100 West 7th Street 15 26.0 11/2/1994 2/6/2010 2/4/2015
+Cassandra Culatra 5 100 West 8th Street 16 28.0 11/2/1994 2/6/2010 2/4/2015
+Oscar Alho 6 100 West 9th Street 17 29.0 11/2/1994 2/6/2010 2/4/2015
