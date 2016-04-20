@@ -1,13 +1,14 @@
 package chatserver;
 
-
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 
 public class TCPCliente extends Thread {
 
@@ -19,8 +20,10 @@ public class TCPCliente extends Thread {
     String ipServer;
     InterfaceClient iCliente;
     String username;
-    Map<String, Cliente>  listaClientes;
-    public TCPCliente(InterfaceClient iCliente,String username, int port, String ipServer) {
+    Map<String, Cliente> listaClientes;
+    Map<String, Cliente> searchByName;
+
+    public TCPCliente(InterfaceClient iCliente, String username, int port, String ipServer) {
         this.serverPort = port;
         this.ipServer = ipServer;
         this.iCliente = iCliente;
@@ -31,23 +34,40 @@ public class TCPCliente extends Thread {
         while (true) {
             try {
                 message = in.readLine();
+                System.out.println(message);
                 if (message == null) {
                     iCliente.jtAnswer.setText(iCliente.jtAnswer.getText() + "\n" + "Conexao Encerrada");
                     iCliente.jbConectar.setText("Conectar");
                     ClientSocket = null;
                     iCliente.cliente = null;
                     this.stop();
-                }else{
+                } else {
                     String[] msg = message.split("#");
-                    if("2".equals(msg[0])){
+                    if ("2".equals(msg[0])) {
+                        DefaultListModel listaModel = new DefaultListModel();
+                        //ListModel lista = iCliente.jtListaClientes.getModel();
                         listaClientes = new HashMap();
-                        for(int i = 1; i < msg.length; i = i + 3){
+                        searchByName = new HashMap();
+                        for (int i = 1; i < msg.length; i = i + 3) {
                             String nome = msg[i];
-                            String ip = msg[i+1];
-                            int port = Integer.parseInt(msg[i+2]);
+                            String ip = msg[i + 1];
+                            int port = Integer.parseInt(msg[i + 2]);
                             Cliente c = new Cliente(nome, ip, port);
-                            listaClientes.put( nome + ":" + ip + ":" + port, c);
+                            listaClientes.put(nome + ":" + ip + ":" + port, c);
+                            searchByName.put(nome, c);
+                            listaModel.addElement(nome);
                         }
+                        Cliente c = new Cliente("Todos", "999.999.999.999", 99999);
+                        listaClientes.put("Todos:999.999.999.999:99999", c);
+                        searchByName.put("Todos", c);
+                        listaModel.addElement("Todos");
+                        iCliente.jtListaClientes.setModel(listaModel);
+                    } else if ("4".equals(msg[0])) {
+                        System.out.println(msg[1] + ":" + msg[2] + ":" + msg[3]);
+                        Cliente cliente = listaClientes.get(msg[1] + ":" + msg[2] + ":" + msg[3]);
+                        iCliente.jtAnswer.setText(iCliente.jtAnswer.getText() + "\n"
+                                + cliente.getNome() + " says "
+                                + msg[4]);
                     }
                 }
                 // String received = in.readLine();
@@ -61,7 +81,7 @@ public class TCPCliente extends Thread {
 
     }
 
-    public int closeConnection(){
+    public int closeConnection() {
         try {
             this.stop();
             ClientSocket.close();
@@ -72,7 +92,7 @@ public class TCPCliente extends Thread {
         }
         return 1;
     }
-    
+
     public boolean createConnection() throws IOException {
         //Geração do socket
         // Socket ClientSocket = null;
@@ -85,7 +105,7 @@ public class TCPCliente extends Thread {
                  que esta na maquina work1 operando na porta 4444 */
 
                 ClientSocket = new Socket(ipServer, serverPort);
-                
+
                 if (!ClientSocket.isConnected()) {
                     ClientSocket = null;
                     return false;
@@ -110,7 +130,7 @@ public class TCPCliente extends Thread {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -120,11 +140,18 @@ public class TCPCliente extends Thread {
             // lê uma linha do teclado
             //System.out.print("Digite uma mensagem: ");
             //message = teclado.readLine();
+            System.out.println(message);
             out.println(message);
             //imprime a resposta do servidor
         } catch (Exception ex) {
             Logger.getLogger(TCPCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public void forwardMessage(String message, String clienteDestino) {
+        Cliente cliente = searchByName.get(clienteDestino);
+        String sendMessageTo = "3#" + cliente.getIpAddress() + "#" + cliente.getPort() + "#" + message;
+        sendMessage(sendMessageTo); 
     }
 }
