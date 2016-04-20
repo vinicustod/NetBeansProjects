@@ -7,9 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-
-
-// Custódio Viadinho Testando
+// Devo ser
 
 public class Cliente extends Thread {
 
