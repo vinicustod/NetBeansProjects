@@ -7,6 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
+
+
+// Custódio Viadinho
+
 public class Cliente extends Thread {
 
     static DataInputStream in;                  // cria um duto de entrada
