@@ -4,9 +4,11 @@ package chatserver;
 // recebe uma linha e ecoa a linha recebida.
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 
 public class Servidor extends Thread {
 
+    CreateServer servidor;
     Socket socketCliente;
     static ServerSocket serverSocket = null;
     String mensagem = "";                        // string para conter informações transferidas
@@ -14,11 +16,13 @@ public class Servidor extends Thread {
     PrintStream dutoSaida;                  // cria um duto de saída
     int portaServidor;
     String answer = "";
-    
-    public Servidor(Socket socketCliente, ServerSocket server, int porta) {
+    private Cliente cliente = null;
+
+    public Servidor(CreateServer servidor, Socket socketCliente, ServerSocket server, int porta) {
         this.socketCliente = socketCliente;
         this.portaServidor = porta;
         this.serverSocket = server;
+        this.servidor = servidor;
     }
 
     public void closingServer() {
@@ -39,24 +43,37 @@ public class Servidor extends Thread {
             while (true) {
                 //aguarda recebimento de dados vindos do cliente
                 mensagem = dutoEntrada.readLine();                           // recebe dados do cliente
+                CreateServer.iServer.jtMessage.setText(CreateServer.iServer.jtMessage.getText() + "\nMessagem recebida: " + mensagem);
 
                 if (mensagem == null) {
                     CreateServer.iServer.jtMessage.setText(CreateServer.iServer.jtMessage.getText() + "\n"
                             + "Cliente: " + socketCliente.getInetAddress().toString() + ":" + socketCliente.getPort() + " desconectou.");
-                    
+                    servidor.removeConnection(cliente);
+                    servidor.updateClientsList();
                     socketCliente.close();
                     this.stop();
                 } else {
-                    CreateServer.iServer.jtMessage.setText(CreateServer.iServer.jtMessage.getText() + "\nMessagem recebida: " + mensagem);
                     String[] msg = mensagem.split("#");
-                    if("1".equals(msg[0])){
+                    
+                    if ("1".equals(msg[0])) {
+
+                        cliente = new Cliente(msg[1], socketCliente.getInetAddress().toString().replace("/", ""), socketCliente.getPort());
+                        servidor.updateClientsList();
                         
-                        Cliente cliente = new Cliente(msg[1], socketCliente.getInetAddress().toString().replace("/", ""), socketCliente.getPort());
-                        CreateServer.listaClientes.put((msg[1] + ":" + socketCliente.getInetAddress().toString() + ":" + socketCliente.getPort()), 
-                                                        cliente);
-                        mensagem = createListaClientes();
+                        //dutoSaida.println(sendList);
+
+                    } else if ("3".equals(msg[0])) {
+                        if("999.999.999.999".equals(msg[1]) && "99999".equals(msg[2])){
+                            servidor.broadcastMessage(cliente.getNome(), cliente.getIpAddress(), cliente.getPort(), msg[3]);
+                        }else{
+                            servidor.fowardMessage(msg[1], msg[2], cliente.getIpAddress(), cliente.getPort(), cliente.getNome(), msg[3]);
+                        }
+                    } else if("5".equals(msg[0])){
+                            servidor.removeConnection(cliente);
+                            servidor.updateClientsList();
+                            this.stop();
                     }
-                
+
                 }
                 //envia a mensagem em caixa alta
                 //answer = "Servidor responde:  " + mensagem.toUpperCase();
@@ -69,9 +86,12 @@ public class Servidor extends Thread {
         }
     }
 
-    private String createListaClientes() {
-        String listaClientes = "";
-        for(CreateServer.listaClientes.)
+    public void sendMessage(String message){
+        dutoSaida.println(message);
+    }
+    
+    public Cliente getCliente() {
+        return cliente;
     }
 
 } // classe

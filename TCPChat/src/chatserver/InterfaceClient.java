@@ -169,13 +169,19 @@ public class InterfaceClient extends javax.swing.JFrame {
     }//GEN-LAST:event_jtsendMessageActionPerformed
 
     private void jbEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEnviarActionPerformed
-        // TODO add your handling code 
+        
+        if(cliente != null){
+            System.out.println("interfacemessage");
+            cliente.forwardMessage(jtsendMessage.getText(), jtListaClientes.getSelectedValue().toString());
+        }
+        
+// TODO add your handling code 
     }//GEN-LAST:event_jbEnviarActionPerformed
 
     private void jbConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbConectarActionPerformed
 
         if (cliente == null) {
-            TCPCliente cliente = new TCPCliente(this, jtUsername.getText(), Integer.parseInt(jtPortServer.getText()), jtIpServer.getText());
+            cliente = new TCPCliente(this, jtUsername.getText(), Integer.parseInt(jtPortServer.getText()), jtIpServer.getText());
             try {
                 if (!cliente.createConnection()) {
                     jtAnswer.setText(jtAnswer.getText() + "\n" + "Conexao nao realizada");
@@ -245,7 +251,7 @@ public class InterfaceClient extends javax.swing.JFrame {
     private javax.swing.JButton jbEnviar;
     protected javax.swing.JTextArea jtAnswer;
     private javax.swing.JTextField jtIpServer;
-    private javax.swing.JList jtListaClientes;
+    protected javax.swing.JList jtListaClientes;
     private javax.swing.JTextField jtPortServer;
     private javax.swing.JTextField jtUsername;
     private javax.swing.JTextField jtsendMessage;

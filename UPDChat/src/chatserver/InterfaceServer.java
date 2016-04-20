@@ -11,6 +11,8 @@ package chatserver;
  */
 public class InterfaceServer extends javax.swing.JFrame {
 
+    UDPServer server = null;
+
     /**
      * Creates new form InterfaceServer
      */
@@ -34,6 +36,14 @@ public class InterfaceServer extends javax.swing.JFrame {
         jtaMensagens = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         jtPorta.setText("10000");
 
@@ -85,13 +95,41 @@ public class InterfaceServer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbConectarActionPerformed
-        try{
-        UDPServer server = new UDPServer();
-        server.openServer(Integer.parseInt(jtPorta.getText()));
-        }catch(Exception e){
+        try {
+            if (server == null) {
+                server = new UDPServer();
+                server.openServer(Integer.parseInt(jtPorta.getText()));
+                server.start();
+                jtPorta.setEnabled(false);
+                jtaMensagens.setText(jtaMensagens.getText() + "\n" + "Servidor Aberto na porta: " + jtPorta.getText());
+                jbConectar.setText("Desconetar");
+            } else {
+
+                server.closeServer();
+                jtPorta.setEnabled(true);
+                jtaMensagens.setText(jtaMensagens.getText() + "\n" + "Servidor fechado.");
+                jbConectar.setText("Conectar");
+                server = null;
+            }
+        } catch (Exception e) {
             System.out.println(e);
         }// TODO add your handling code here:
     }//GEN-LAST:event_jbConectarActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        //server.closeServer();
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowClosed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        server.closeServer();
+//        jtPorta.setEnabled(true);
+//        jtaMensagens.setText(jtaMensagens.getText() + "\n" + "Servidor fechado.");
+//        jbConectar.setText("Conectar");
+//        server = null;
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
@@ -133,6 +171,6 @@ public class InterfaceServer extends javax.swing.JFrame {
     private javax.swing.JButton jbConectar;
     private javax.swing.JLabel jlPorta;
     private javax.swing.JTextField jtPorta;
-    private javax.swing.JTextArea jtaMensagens;
+    protected javax.swing.JTextArea jtaMensagens;
     // End of variables declaration//GEN-END:variables
 }
