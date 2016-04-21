@@ -1,6 +1,5 @@
 package controle;
 
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class InterfaceCliente extends javax.swing.JFrame {
 
-    protected Cliente cliente;
+    protected Client cliente;
 
     /**
      * Creates new form InterfaceCliente
@@ -34,16 +33,15 @@ public class InterfaceCliente extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jlServerIP = new javax.swing.JLabel();
-        jtServerIP = new javax.swing.JTextField();
+        jlServerIp = new javax.swing.JLabel();
+        jtServerIp = new javax.swing.JTextField();
         jlServerPort = new javax.swing.JLabel();
         jtServerPort = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jtAnswer = new javax.swing.JTextArea();
-        jtMessage = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jbEnviar = new javax.swing.JButton();
-        jbConectar = new javax.swing.JButton();
+        jtUsername = new javax.swing.JTextField();
+        jlUsername = new javax.swing.JLabel();
+        jbSend = new javax.swing.JButton();
+        jtPassword = new javax.swing.JTextField();
+        jlPassword = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -52,120 +50,118 @@ public class InterfaceCliente extends javax.swing.JFrame {
             }
         });
 
-        jlServerIP.setText("IP Servidor:");
+        jlServerIp.setText("IP Servidor:");
 
-        jtServerIP.setText("127.0.0.1");
+        jtServerIp.setText("127.0.0.1");
+        jtServerIp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtServerIpActionPerformed(evt);
+            }
+        });
 
-        jlServerPort.setText("Porta Servidor");
+        jlServerPort.setText("Porta Servidor:");
 
         jtServerPort.setText("10000");
-
-        jtAnswer.setColumns(20);
-        jtAnswer.setRows(5);
-        jScrollPane1.setViewportView(jtAnswer);
-
-        jtMessage.setText("Digite sua Mensagem aqui");
-
-        jLabel1.setText("Resposta Servidor:");
-
-        jbEnviar.setText("Enviar");
-        jbEnviar.addActionListener(new java.awt.event.ActionListener() {
+        jtServerPort.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbEnviarActionPerformed(evt);
+                jtServerPortActionPerformed(evt);
             }
         });
 
-        jbConectar.setText("Conectar");
-        jbConectar.addActionListener(new java.awt.event.ActionListener() {
+        jlUsername.setText("Username:");
+
+        jbSend.setText("Enviar");
+        jbSend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbConectarActionPerformed(evt);
+                jbSendActionPerformed(evt);
             }
         });
+
+        jlPassword.setText("Password:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jbEnviar)
-                        .addGap(15, 15, 15))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jlServerIP)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jlServerIp)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtServerIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)
+                        .addComponent(jtServerIp))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jlUsername)
+                            .addComponent(jlPassword))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jbSend)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                .addComponent(jtUsername))))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jlServerPort)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtServerPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                        .addComponent(jbConectar)
-                        .addGap(10, 10, 10))
-                    .addComponent(jtMessage, javax.swing.GroupLayout.Alignment.LEADING))
-                .addContainerGap())
+                        .addComponent(jtServerPort)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlServerIP)
-                    .addComponent(jtServerIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jlServerPort)
-                    .addComponent(jtServerPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbConectar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jlServerIp)
+                    .addComponent(jtServerIp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jbEnviar))
+                    .addComponent(jlServerPort)
+                    .addComponent(jtServerPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jlUsername))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jlPassword))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jbSend)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jbConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbConectarActionPerformed
-        if (cliente == null) {
-            cliente = new Cliente(this, Integer.parseInt(jtServerPort.getText()), jtServerIP.getText());
-            try {
-                if (!cliente.createConnection()) {
-                    jtAnswer.setText(jtAnswer.getText() + "\n" + "Conexao nao realizada");
-                    cliente = null;
-                } else {
-                    jbConectar.setText("Desconectar");
-                    cliente.start();
+    private void jbSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSendActionPerformed
+        try {
+            if (cliente == null) {
+                cliente = new Client(this, Integer.parseInt(this.jtServerPort.getText()), this.jtServerIp.getText());
+                if (cliente.createConnection()) {
+                    cliente.sendMessage("01;" + jtUsername.getText() + ";" + jtPassword.getText());
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(InterfaceCliente.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }else{
-            cliente.closeConnection();
-            jbConectar.setText("Conectar");
-            cliente = null;
-        }
-    }//GEN-LAST:event_jbConectarActionPerformed
 
-    private void jbEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEnviarActionPerformed
-        if (cliente != null) {
-            cliente.sendMessage(jtMessage.getText());
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(InterfaceCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
         // TODO add your handling code here:
-    }//GEN-LAST:event_jbEnviarActionPerformed
+    }//GEN-LAST:event_jbSendActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        if(cliente != null)
+        if (cliente != null) {
             cliente.closeConnection();
+        }
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowClosed
+
+    private void jtServerPortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtServerPortActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtServerPortActionPerformed
+
+    private void jtServerIpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtServerIpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtServerIpActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,15 +199,14 @@ public class InterfaceCliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    protected javax.swing.JButton jbConectar;
-    private javax.swing.JButton jbEnviar;
-    private javax.swing.JLabel jlServerIP;
+    private javax.swing.JButton jbSend;
+    private javax.swing.JLabel jlPassword;
+    private javax.swing.JLabel jlServerIp;
     private javax.swing.JLabel jlServerPort;
-    protected javax.swing.JTextArea jtAnswer;
-    private javax.swing.JTextField jtMessage;
-    private javax.swing.JTextField jtServerIP;
+    private javax.swing.JLabel jlUsername;
+    private javax.swing.JTextField jtPassword;
+    private javax.swing.JTextField jtServerIp;
     private javax.swing.JTextField jtServerPort;
+    private javax.swing.JTextField jtUsername;
     // End of variables declaration//GEN-END:variables
 }
