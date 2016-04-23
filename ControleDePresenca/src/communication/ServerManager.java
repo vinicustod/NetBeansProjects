@@ -1,7 +1,8 @@
-package controle;
+package communication;
 
 
 
+import view.InterfaceServidor;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,14 +18,16 @@ import java.util.Iterator;
  *
  * @author viniciuscustodio
  */
-public class CreateServer extends Thread {
+public class ServerManager extends Thread {
+
+ 
 
     int porta;
     static InterfaceServidor iServer;
-    static ServerSocket serverSocket = null;
+    private static ServerSocket serverSocket = null;
     ArrayList<Thread> athreads = new ArrayList();
 
-    public CreateServer(InterfaceServidor iServer, int portaServidor) {
+    public ServerManager(InterfaceServidor iServer, int portaServidor) {
         this.porta = portaServidor;
         this.iServer = iServer;
     }
@@ -32,14 +35,14 @@ public class CreateServer extends Thread {
     public void stopAll(){
         Iterator i = athreads.iterator();
         while(i.hasNext()){
-            Servidor thread = (Servidor) i.next();
+            ServerCommunication thread = (ServerCommunication) i.next();
             thread.closingServer();
             thread.stop();
         }
     }
     
     public void run() {
-        iServer.jtMessage.setText(iServer.jtMessage.getText() + "\n" + "Servidor carregado no IP 127.0.0.1 e na porta " + porta);
+        iServer.getJtMessage().setText(iServer.getJtMessage().getText() + "\n" + "Servidor carregado no IP 127.0.0.1 e na porta " + porta);
 
         //ServerSocket servidorEco = null;        // cria o socket do servidor
         Socket socketCliente = null;            // cria o socket do cliente
@@ -55,13 +58,30 @@ public class CreateServer extends Thread {
 
         try {
             while (true) {
+                                System.out.println("esperando");
+
                 socketCliente = serverSocket.accept();                         // aguarda conexão do cliente
-                Servidor t = new Servidor( socketCliente, serverSocket, porta);
+                    System.out.println("aceitou");
+                ServerCommunication t = new ServerCommunication( socketCliente, getServerSocket(), porta);
                 athreads.add(t);
                 t.start();
 
             }
         } catch (IOException e) {
         }
+    }
+    
+       /**
+     * @return the serverSocket
+     */
+    public static ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    /**
+     * @param aServerSocket the serverSocket to set
+     */
+    public static void setServerSocket(ServerSocket aServerSocket) {
+        serverSocket = aServerSocket;
     }
 }

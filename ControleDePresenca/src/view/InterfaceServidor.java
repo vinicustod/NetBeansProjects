@@ -1,6 +1,7 @@
-package controle;
+package view;
 
 
+import communication.ServerManager;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class InterfaceServidor extends javax.swing.JFrame {
 
-    CreateServer server = null;
+    ServerManager server = null;
 
     /**
      * Creates new form InterfaceServidor
@@ -110,7 +111,7 @@ public class InterfaceServidor extends javax.swing.JFrame {
 
     private void jbtOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtOpenActionPerformed
         if (server == null) {
-            server = new CreateServer(this, Integer.parseInt(jtServerPort.getText()));
+            server = new ServerManager(this, Integer.parseInt(jtServerPort.getText()));
             server.start();
             jbtOpen.setText("Fechar Servidor");
             jlStatus.setText("Online");
@@ -118,7 +119,7 @@ public class InterfaceServidor extends javax.swing.JFrame {
         } else {
             try {
                 server.stopAll();
-                server.serverSocket.close();
+                server.getServerSocket().close();
                 server.stop();
                 jbtOpen.setText("Abrir Servidor");
                 jlStatus.setText("Offline");
@@ -175,4 +176,18 @@ public class InterfaceServidor extends javax.swing.JFrame {
     protected javax.swing.JTextArea jtMessage;
     private javax.swing.JTextField jtServerPort;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the jtMessage
+     */
+    public javax.swing.JTextArea getJtMessage() {
+        return jtMessage;
+    }
+
+    /**
+     * @param jtMessage the jtMessage to set
+     */
+    public void setJtMessage(javax.swing.JTextArea jtMessage) {
+        this.jtMessage = jtMessage;
+    }
 }

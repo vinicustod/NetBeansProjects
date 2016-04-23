@@ -1,6 +1,7 @@
-package controle;
+package communication;
 
 
+import view.InterfaceCliente;
 import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
@@ -9,7 +10,7 @@ import javax.swing.JOptionPane;
 
 // Devo ser
 
-public class Client extends Thread {
+public class ClientCommunication extends Thread {
 
     static DataInputStream in;                  // cria um duto de entrada
     static PrintStream out;                     // cria um duto de saída
@@ -19,7 +20,7 @@ public class Client extends Thread {
     String ipServer;
     InterfaceCliente iCliente;
 
-    public Client(InterfaceCliente iCliente, int port, String ipServer) {
+    public ClientCommunication(InterfaceCliente iCliente, int port, String ipServer) {
         this.serverPort = port;
         this.ipServer = ipServer;
         this.iCliente = iCliente;
@@ -30,14 +31,12 @@ public class Client extends Thread {
             try {
                 message = in.readLine();
                 if (message == null) {
-          //          iCliente.jtAnswer.setText(iCliente.jtAnswer.getText() + "\n" + "Conexao Encerrada");
-            //        iCliente.jbConectar.setText("Conectar");
                     ClientSocket = null;
-                    iCliente.cliente = null;
+                    iCliente.setCliente(null);
                     this.stop();
                 }else{
                     String[] spliteMessage = message.split(";");
-                    System.out.println(message);
+                    
                 }
                 
                 
@@ -45,7 +44,7 @@ public class Client extends Thread {
 
                 //iCliente.jtAnswer.setText(iCliente.jtAnswer.getText() + "\n" + message);
             } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ClientCommunication.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -58,7 +57,7 @@ public class Client extends Thread {
             ClientSocket.close();
             ClientSocket = null;
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientCommunication.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
         return 1;
@@ -80,9 +79,11 @@ public class Client extends Thread {
                     ClientSocket = null;
                     return false;
                 }
+                
                 /* associa um buffer de entrada e outro de saida ao socket */
                 in = new DataInputStream(ClientSocket.getInputStream());    // aponta o duto de entrada para o socket do cliente
                 out = new PrintStream(ClientSocket.getOutputStream());       // aponta o duto de saída para o socket do cliente
+                System.out.println("Cliente connection");
                 //imprime a resposta de conexão do servidor
                 //iCliente.jtAnswer.setText(iCliente.jtAnswer.getText() + "\n" + in.readLine());
             } catch (UnknownHostException e) {
@@ -111,7 +112,7 @@ public class Client extends Thread {
             out.println(message);
             //imprime a resposta do servidor
         } catch (Exception ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientCommunication.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

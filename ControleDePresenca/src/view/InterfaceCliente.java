@@ -1,5 +1,6 @@
-package controle;
+package view;
 
+import communication.ClientCommunication;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,8 +15,16 @@ import java.util.logging.Logger;
  * @author viniciuscustodio
  */
 public class InterfaceCliente extends javax.swing.JFrame {
-
-    protected Client cliente;
+    private static InterfaceCliente login = null;
+            
+    public static void createLogin(){
+        if(login == null){
+            login = new InterfaceCliente();
+        }
+        login.setVisible(true);
+    }
+    
+    private ClientCommunication cliente;
 
     /**
      * Creates new form InterfaceCliente
@@ -135,11 +144,15 @@ public class InterfaceCliente extends javax.swing.JFrame {
 
     private void jbSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSendActionPerformed
         try {
-            if (cliente == null) {
-                cliente = new Client(this, Integer.parseInt(this.jtServerPort.getText()), this.jtServerIp.getText());
-                if (cliente.createConnection()) {
-                    cliente.sendMessage("01;" + jtUsername.getText() + ";" + jtPassword.getText());
+            if (getCliente() == null) {
+                setCliente(new ClientCommunication(this, Integer.parseInt(this.jtServerPort.getText()), this.jtServerIp.getText()));
+                if (getCliente().createConnection()) {
+                    getCliente().start();
+                    getCliente().sendMessage("01;" + jtUsername.getText() + ";" + jtPassword.getText());
+                    InterfaceMenu.createMenu();
+                    this.setVisible(false);
                 }
+                
 
             }
         } catch (IOException ex) {
@@ -149,8 +162,8 @@ public class InterfaceCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_jbSendActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        if (cliente != null) {
-            cliente.closeConnection();
+        if (getCliente() != null) {
+            getCliente().closeConnection();
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowClosed
@@ -209,4 +222,18 @@ public class InterfaceCliente extends javax.swing.JFrame {
     private javax.swing.JTextField jtServerPort;
     private javax.swing.JTextField jtUsername;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the cliente
+     */
+    public ClientCommunication getCliente() {
+        return cliente;
+    }
+
+    /**
+     * @param cliente the cliente to set
+     */
+    public void setCliente(ClientCommunication cliente) {
+        this.cliente = cliente;
+    }
 }
