@@ -1,15 +1,14 @@
 package communication;
 
-
 import view.InterfaceCliente;
 import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import view.InterfaceMenu;
 
 // Devo ser
-
 public class ClientCommunication extends Thread {
 
     static DataInputStream in;                  // cria um duto de entrada
@@ -30,18 +29,27 @@ public class ClientCommunication extends Thread {
         while (true) {
             try {
                 message = in.readLine();
+                System.out.println(message);
                 if (message == null) {
                     ClientSocket = null;
                     iCliente.setCliente(null);
                     this.stop();
-                }else{
-                    String[] spliteMessage = message.split(";");
-                    
-                }
-                
-                
-                // String received = in.readLine();
+                } else {
+                    String[] splitMessage = message.split(";");
+                    if ("02".equals(splitMessage[0])) {
+                        if ("1".equals(splitMessage[1])) {
+                            InterfaceMenu.createMenu();
+                            iCliente.setVisible(false);
+                        } else {
+                            iCliente.wrongUserPassword();
+                            this.closeConnection();
+                            System.out.println("teste");
 
+                        }
+                    }
+                }
+
+                // String received = in.readLine();
                 //iCliente.jtAnswer.setText(iCliente.jtAnswer.getText() + "\n" + message);
             } catch (IOException ex) {
                 Logger.getLogger(ClientCommunication.class.getName()).log(Level.SEVERE, null, ex);
@@ -51,18 +59,19 @@ public class ClientCommunication extends Thread {
 
     }
 
-    public int closeConnection(){
+    public int closeConnection() {
         try {
-            this.stop();
             ClientSocket.close();
             ClientSocket = null;
+            iCliente.setCliente(null);
+            this.stop();
         } catch (IOException ex) {
             Logger.getLogger(ClientCommunication.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
         return 1;
     }
-    
+
     public boolean createConnection() throws IOException {
         //Geração do socket
         // Socket ClientSocket = null;
@@ -79,7 +88,7 @@ public class ClientCommunication extends Thread {
                     ClientSocket = null;
                     return false;
                 }
-                
+
                 /* associa um buffer de entrada e outro de saida ao socket */
                 in = new DataInputStream(ClientSocket.getInputStream());    // aponta o duto de entrada para o socket do cliente
                 out = new PrintStream(ClientSocket.getOutputStream());       // aponta o duto de saída para o socket do cliente

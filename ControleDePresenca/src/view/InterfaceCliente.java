@@ -4,6 +4,7 @@ import communication.ClientCommunication;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -144,15 +145,14 @@ public class InterfaceCliente extends javax.swing.JFrame {
 
     private void jbSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSendActionPerformed
         try {
+            System.out.println("Interface Send");
+            System.out.println(cliente);
             if (getCliente() == null) {
                 setCliente(new ClientCommunication(this, Integer.parseInt(this.jtServerPort.getText()), this.jtServerIp.getText()));
                 if (getCliente().createConnection()) {
                     getCliente().start();
                     getCliente().sendMessage("01;" + jtUsername.getText() + ";" + jtPassword.getText());
-                    InterfaceMenu.createMenu();
-                    this.setVisible(false);
                 }
-                
 
             }
         } catch (IOException ex) {
@@ -176,6 +176,9 @@ public class InterfaceCliente extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jtServerIpActionPerformed
 
+    public void wrongUserPassword(){
+        JOptionPane.showMessageDialog(rootPane, "Senha ou usuario incorreto", "Erro", JOptionPane.WARNING_MESSAGE);
+    }
     /**
      * @param args the command line arguments
      */
@@ -233,6 +236,8 @@ public class InterfaceCliente extends javax.swing.JFrame {
     /**
      * @param cliente the cliente to set
      */
+    
+
     public void setCliente(ClientCommunication cliente) {
         this.cliente = cliente;
     }

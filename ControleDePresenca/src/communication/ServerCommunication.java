@@ -54,7 +54,11 @@ public class ServerCommunication extends Thread {
                     System.out.println("here");
                    String[] splitMessage = message.split(";");
                    if("01".equals(splitMessage[0])){
-                       System.out.println( FileManager.checkInFile(LOGIN, message));
+                       if( FileManager.checkInFile(LOGIN, message)){
+                           dutoSaida.println("02;1");
+                       }else{
+                           dutoSaida.println("02;0");
+                       }
                    }
                 }
                 //envia a mensagem em caixa alta

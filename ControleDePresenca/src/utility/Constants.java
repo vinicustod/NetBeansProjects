@@ -11,7 +11,7 @@ package utility;
  */
 public class Constants {
 
-    public static final String LOGIN = "login.txt";
+    public static final String LOGIN = "./src/utility/files/login.txt";
    
 
 }
