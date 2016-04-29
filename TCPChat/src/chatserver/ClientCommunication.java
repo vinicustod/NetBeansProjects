@@ -10,7 +10,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 
-public class TCPCliente extends Thread {
+public class ClientCommunication extends Thread {
 
     static DataInputStream in;                  // cria um duto de entrada
     static PrintStream out;                     // cria um duto de saída
@@ -20,10 +20,10 @@ public class TCPCliente extends Thread {
     String ipServer;
     InterfaceClient iCliente;
     String username;
-    Map<String, Cliente> listaClientes;
-    Map<String, Cliente> searchByName;
+    Map<String, Client> listaClientes;
+    Map<String, Client> searchByName;
 
-    public TCPCliente(InterfaceClient iCliente, String username, int port, String ipServer) {
+    public ClientCommunication(InterfaceClient iCliente, String username, int port, String ipServer) {
         this.serverPort = port;
         this.ipServer = ipServer;
         this.iCliente = iCliente;
@@ -36,8 +36,8 @@ public class TCPCliente extends Thread {
                 message = in.readLine();
                 System.out.println(message);
                 if (message == null) {
-                    iCliente.jtAnswer.setText(iCliente.jtAnswer.getText() + "\n" + "Conexao Encerrada");
-                    iCliente.jbConectar.setText("Conectar");
+                    iCliente.getJtAnswer().setText(iCliente.getJtAnswer().getText() + "\n" + "Conexao Encerrada");
+                    iCliente.getJbConectar().setText("Conectar");
                     ClientSocket = null;
                     iCliente.cliente = null;
                     this.stop();
@@ -52,21 +52,21 @@ public class TCPCliente extends Thread {
                             String nome = msg[i];
                             String ip = msg[i + 1];
                             int port = Integer.parseInt(msg[i + 2]);
-                            Cliente c = new Cliente(nome, ip, port);
+                            Client c = new Client(nome, ip, port);
                             listaClientes.put(nome + ":" + ip + ":" + port, c);
                             searchByName.put(nome, c);
                             listaModel.addElement(nome);
                         }
-                        Cliente c = new Cliente("Todos", "999.999.999.999", 99999);
+                        Client c = new Client("Todos", "999.999.999.999", 99999);
                         listaClientes.put("Todos:999.999.999.999:99999", c);
                         searchByName.put("Todos", c);
                         listaModel.addElement("Todos");
-                        iCliente.jtListaClientes.setModel(listaModel);
+                        iCliente.getJtListaClientes().setModel(listaModel);
                     } else if ("4".equals(msg[0])) {
                         System.out.println(msg[1] + ":" + msg[2] + ":" + msg[3]);
-                        Cliente cliente = listaClientes.get(msg[1] + ":" + msg[2] + ":" + msg[3]);
-                        iCliente.jtAnswer.setText(iCliente.jtAnswer.getText() + "\n"
-                                + cliente.getNome() + " says "
+                        Client cliente = listaClientes.get(msg[1] + ":" + msg[2] + ":" + msg[3]);
+                        iCliente.getJtAnswer().setText(iCliente.getJtAnswer().getText() + "\n"
+                                + cliente.getNome() + " says to me"
                                 + msg[4]);
                     }
                 }
@@ -74,7 +74,7 @@ public class TCPCliente extends Thread {
 
                 // iCliente.jtAnswer.setText(iCliente.jtAnswer.getText() + "\n" + message);
             } catch (IOException ex) {
-                Logger.getLogger(TCPCliente.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ClientCommunication.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -87,7 +87,7 @@ public class TCPCliente extends Thread {
             ClientSocket.close();
             ClientSocket = null;
         } catch (IOException ex) {
-            Logger.getLogger(TCPCliente.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientCommunication.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
         return 1;
@@ -140,17 +140,18 @@ public class TCPCliente extends Thread {
             // lê uma linha do teclado
             //System.out.print("Digite uma mensagem: ");
             //message = teclado.readLine();
-            System.out.println(message);
             out.println(message);
             //imprime a resposta do servidor
         } catch (Exception ex) {
-            Logger.getLogger(TCPCliente.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientCommunication.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     public void forwardMessage(String message, String clienteDestino) {
-        Cliente cliente = searchByName.get(clienteDestino);
+        if(!"Todos".equals(clienteDestino))
+            iCliente.getJtAnswer().setText(iCliente.getJtAnswer().getText() + "\n" + "You say to " + clienteDestino + ": " + message);
+        Client cliente = searchByName.get(clienteDestino);
         String sendMessageTo = "3#" + cliente.getIpAddress() + "#" + cliente.getPort() + "#" + message;
         sendMessage(sendMessageTo); 
     }

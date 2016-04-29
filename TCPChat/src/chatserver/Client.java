@@ -9,12 +9,12 @@ package chatserver;
  *
  * @author viniciuscustodio
  */
-public class Cliente {
+public class Client {
     private String nome;
     private String ipAddress;
     private int port;
 
-    Cliente(String nome, String ipAddress, int port) {
+    Client(String nome, String ipAddress, int port) {
         this.nome = nome;
         this.ipAddress = ipAddress;
         this.port = port;

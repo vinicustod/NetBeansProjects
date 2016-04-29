@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * @author viniciuscustodio
  */
 public class InterfaceServer extends javax.swing.JFrame {
-    CreateServer server = null;
+    ServerManager server = null;
     /**
      * Creates new form InterfaceServer
      */
@@ -32,6 +32,8 @@ public class InterfaceServer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jtServerPort = new javax.swing.JTextField();
         jbtOpen = new javax.swing.JButton();
         jlPorta = new javax.swing.JLabel();
@@ -39,6 +41,21 @@ public class InterfaceServer extends javax.swing.JFrame {
         jtMessage = new javax.swing.JTextArea();
         jlStatusStatus = new javax.swing.JLabel();
         jlStatus = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable = new javax.swing.JTable();
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -62,6 +79,16 @@ public class InterfaceServer extends javax.swing.JFrame {
         jlStatus.setForeground(new java.awt.Color(255, 0, 0));
         jlStatus.setText("Offline");
 
+        jTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Username", "IP", "Port"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -70,7 +97,10 @@ public class InterfaceServer extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,7 +134,9 @@ public class InterfaceServer extends javax.swing.JFrame {
                         .addComponent(jbtOpen)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -112,7 +144,7 @@ public class InterfaceServer extends javax.swing.JFrame {
 
     private void jbtOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtOpenActionPerformed
         if (server == null) {
-            server = new CreateServer(this, Integer.parseInt(jtServerPort.getText()));
+            server = new ServerManager(this, Integer.parseInt(jtServerPort.getText()));
             server.start();
             jbtOpen.setText("Fechar");
             jlStatus.setText("Online");
@@ -125,7 +157,7 @@ public class InterfaceServer extends javax.swing.JFrame {
                 jbtOpen.setText("Abrir");
                 jlStatus.setText("Offline");
                 jlStatus.setForeground(Color.red);
-                jtMessage.setText(jtMessage.getText() + "\n" + "Sevidor fechado.");
+                getJtMessage().setText(getJtMessage().getText() + "\n" + "Sevidor fechado.");
                 server = null;
             } catch (IOException ex) {
                 Logger.getLogger(InterfaceServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -171,11 +203,43 @@ public class InterfaceServer extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable;
+    private javax.swing.JTable jTable1;
     private javax.swing.JButton jbtOpen;
     private javax.swing.JLabel jlPorta;
     private javax.swing.JLabel jlStatus;
     private javax.swing.JLabel jlStatusStatus;
-    protected javax.swing.JTextArea jtMessage;
+    private javax.swing.JTextArea jtMessage;
     private javax.swing.JTextField jtServerPort;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the jtMessage
+     */
+    public javax.swing.JTextArea getJtMessage() {
+        return jtMessage;
+    }
+
+    /**
+     * @param jtMessage the jtMessage to set
+     */
+    public void setJtMessage(javax.swing.JTextArea jtMessage) {
+        this.jtMessage = jtMessage;
+    }
+
+    /**
+     * @return the jTable
+     */
+    public javax.swing.JTable getjTable() {
+        return jTable;
+    }
+
+    /**
+     * @param jTable the jTable to set
+     */
+    public void setjTable(javax.swing.JTable jTable) {
+        this.jTable = jTable;
+    }
 }

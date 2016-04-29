@@ -6,9 +6,9 @@ import java.io.*;
 import java.net.*;
 import java.util.Map;
 
-public class Servidor extends Thread {
+public class ServerCommunication extends Thread {
 
-    CreateServer servidor;
+    ServerManager servidor;
     Socket socketCliente;
     static ServerSocket serverSocket = null;
     String mensagem = "";                        // string para conter informações transferidas
@@ -16,9 +16,9 @@ public class Servidor extends Thread {
     PrintStream dutoSaida;                  // cria um duto de saída
     int portaServidor;
     String answer = "";
-    private Cliente cliente = null;
+    private Client cliente = null;
 
-    public Servidor(CreateServer servidor, Socket socketCliente, ServerSocket server, int porta) {
+    public ServerCommunication(ServerManager servidor, Socket socketCliente, ServerSocket server, int porta) {
         this.socketCliente = socketCliente;
         this.portaServidor = porta;
         this.serverSocket = server;
@@ -36,17 +36,17 @@ public class Servidor extends Thread {
             dutoSaida = new PrintStream(socketCliente.getOutputStream());       // aponta o duto de saída para o socket do cliente
 
             //envia a mensagem de conexão ao cliente
-            CreateServer.iServer.jtMessage.setText(CreateServer.iServer.jtMessage.getText() + "\n"
+            ServerManager.iServer.getJtMessage().setText(ServerManager.iServer.getJtMessage().getText() + "\n"
                     + "O cliente:" + socketCliente.getInetAddress().toString() + ":" + socketCliente.getPort() + " se conectou ao servidor");
 
             // dutoSaida.println("Conexão efetuada com o servidor 127.0.0.1 Porta " + portaServidor);
             while (true) {
                 //aguarda recebimento de dados vindos do cliente
                 mensagem = dutoEntrada.readLine();                           // recebe dados do cliente
-                CreateServer.iServer.jtMessage.setText(CreateServer.iServer.jtMessage.getText() + "\nMessagem recebida: " + mensagem);
+                ServerManager.iServer.getJtMessage().setText(ServerManager.iServer.getJtMessage().getText() + "\nMessagem recebida: " + mensagem);
 
                 if (mensagem == null) {
-                    CreateServer.iServer.jtMessage.setText(CreateServer.iServer.jtMessage.getText() + "\n"
+                    ServerManager.iServer.getJtMessage().setText(ServerManager.iServer.getJtMessage().getText() + "\n"
                             + "Cliente: " + socketCliente.getInetAddress().toString() + ":" + socketCliente.getPort() + " desconectou.");
                     servidor.removeConnection(cliente);
                     servidor.updateClientsList();
@@ -57,7 +57,7 @@ public class Servidor extends Thread {
                     
                     if ("1".equals(msg[0])) {
 
-                        cliente = new Cliente(msg[1], socketCliente.getInetAddress().toString().replace("/", ""), socketCliente.getPort());
+                        cliente = new Client(msg[1], socketCliente.getInetAddress().toString().replace("/", ""), socketCliente.getPort());
                         servidor.updateClientsList();
                         
                         //dutoSaida.println(sendList);
@@ -76,8 +76,8 @@ public class Servidor extends Thread {
 
                 }
                 //envia a mensagem em caixa alta
-                //answer = "Servidor responde:  " + mensagem.toUpperCase();
-                // CreateServer.iServer.jtMessage.setText(CreateServer.iServer.jtMessage.getText() + "\n" + socketCliente.getInetAddress().toString()
+                //answer = "ServerCommunication responde:  " + mensagem.toUpperCase();
+                // ServerManager.iServer.jtMessage.setText(ServerManager.iServer.jtMessage.getText() + "\n" + socketCliente.getInetAddress().toString()
                 //        + ":" + socketCliente.getPort() + " says " + mensagem);
                 //dutoSaida.println(answer);     // envia dados para o cliente
             }
@@ -90,7 +90,7 @@ public class Servidor extends Thread {
         dutoSaida.println(message);
     }
     
-    public Cliente getCliente() {
+    public Client getCliente() {
         return cliente;
     }
 

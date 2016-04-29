@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -17,22 +19,22 @@ import java.util.Map;
  *
  * @author viniciuscustodio
  */
-public class CreateServer extends Thread {
+public class ServerManager extends Thread {
 
     int porta;
     static InterfaceServer iServer;
     static ServerSocket serverSocket = null;
-    private Map<String, Servidor> connectedClients = new HashMap();
-    //static protected Map<String, Cliente> listaClientes;
+    private Map<String, ServerCommunication> connectedClients = new HashMap();
+    //static protected Map<String, Client> listaClientes;
 
-    public CreateServer(InterfaceServer iServer, int portaServidor) {
+    public ServerManager(InterfaceServer iServer, int portaServidor) {
         this.porta = portaServidor;
         this.iServer = iServer;
     }
 
-    public void broadcastMessage(String nome, String ipAddress, int port, String msg) {
-        for (Map.Entry<String, Servidor> cliente : connectedClients.entrySet()) {
-            Servidor connected = cliente.getValue();
+    public synchronized void broadcastMessage(String nome, String ipAddress, int port, String msg) {
+        for (Map.Entry<String, ServerCommunication> cliente : connectedClients.entrySet()) {
+            ServerCommunication connected = cliente.getValue();
             connected.sendMessage("4"
                     + "#" + nome
                     + "#" + ipAddress
@@ -41,36 +43,53 @@ public class CreateServer extends Thread {
         }
     }
 
-    public void fowardMessage(String ipDestino, String portaDestino, String ipOrigem, int portaOrigem, String nome, String mensagem) {
-        Servidor cliente = connectedClients.get(ipDestino + ":" + portaDestino);
+    public synchronized void fowardMessage(String ipDestino, String portaDestino, String ipOrigem, int portaOrigem, String nome, String mensagem) {
+        ServerCommunication cliente = connectedClients.get(ipDestino + ":" + portaDestino);
         cliente.sendMessage("4#" + nome + "#"
                 + ipOrigem + "#"
                 + portaOrigem + "#"
                 + mensagem);
     }
 
+    public void updateTable(){
+        DefaultTableModel model = (DefaultTableModel) iServer.getjTable().getModel();
+        int count = model.getRowCount();
+        for(int i = count -1; i >= 0; i--){
+            model.removeRow(i);
+        }
+        for(Map.Entry<String, ServerCommunication> cliente: connectedClients.entrySet()){
+            ServerCommunication connected = cliente.getValue();
+            Object[] row = {connected.getCliente().getNome(),
+                            connected.getCliente().getIpAddress(),
+                            connected.getCliente().getPort()};
+            model.addRow(row);
+        }
+        iServer.getjTable().setModel(model);
+    }
+    
     public synchronized String createListConnectedClients() {
         String clientsList = "2";
-        for (Map.Entry<String, Servidor> cliente : connectedClients.entrySet()) {
-            Servidor connected = cliente.getValue();
+        for (Map.Entry<String, ServerCommunication> cliente : connectedClients.entrySet()) {
+            ServerCommunication connected = cliente.getValue();
             clientsList = clientsList
                     + "#" + connected.getCliente().getNome()
                     + "#" + connected.getCliente().getIpAddress() + "#"
                     + connected.getCliente().getPort();
         }
+        this.updateTable();
         return clientsList;
     }
 
     public void stopAll() {
-        for (Map.Entry<String, Servidor> cliente : getConnectedClients().entrySet()) {
-            Servidor thread = cliente.getValue();
+        for (Map.Entry<String, ServerCommunication> cliente : getConnectedClients().entrySet()) {
+            ServerCommunication thread = cliente.getValue();
             thread.closingServer();
             thread.stop();
         }
     }
 
     public void run() {
-        iServer.jtMessage.setText(iServer.jtMessage.getText() + "\n" + "Servidor carregado no IP 127.0.0.1 e na porta " + porta);
+        iServer.getJtMessage().setText(iServer.getJtMessage().getText() + "\n" + "Servidor carregado no IP 127.0.0.1 e na porta " + porta);
 
         //ServerSocket servidorEco = null;        // cria o socket do servidor
         Socket socketCliente = null;            // cria o socket do cliente
@@ -87,7 +106,7 @@ public class CreateServer extends Thread {
         try {
             while (true) {
                 socketCliente = serverSocket.accept();                         // aguarda conexão do cliente
-                Servidor t = new Servidor(this, socketCliente, serverSocket, porta);
+                ServerCommunication t = new ServerCommunication(this, socketCliente, serverSocket, porta);
                 getConnectedClients().put(socketCliente.getInetAddress().getHostAddress() + ":" + socketCliente.getPort(), t);
                 t.start();
             }
@@ -98,26 +117,27 @@ public class CreateServer extends Thread {
     /**
      * @return the connectedClients
      */
-    public Map<String, Servidor> getConnectedClients() {
+    public Map<String, ServerCommunication> getConnectedClients() {
         return connectedClients;
     }
 
     /**
      * @param connectedClients the connectedClients to set
      */
-    public void setConnectedClients(Map<String, Servidor> connectedClients) {
+    public synchronized void setConnectedClients(Map<String, ServerCommunication> connectedClients) {
         this.connectedClients = connectedClients;
     }
 
-    public void removeConnection(Cliente cliente) {
+    public synchronized void removeConnection(Client cliente) {
         this.connectedClients.remove(cliente.getIpAddress() + ":" + cliente.getPort());
+        updateTable();
     }
 
-    void updateClientsList() {
+    public synchronized void updateClientsList() {
         String listClients = this.createListConnectedClients();
         System.out.println(listClients);
-        for (Map.Entry<String, Servidor> cliente : connectedClients.entrySet()) {
-            Servidor connected = cliente.getValue();
+        for (Map.Entry<String, ServerCommunication> cliente : connectedClients.entrySet()) {
+            ServerCommunication connected = cliente.getValue();
             connected.sendMessage(listClients);
         }
     }

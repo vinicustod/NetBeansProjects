@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class InterfaceClient extends javax.swing.JFrame {
 
-    TCPCliente cliente = null;
+    ClientCommunication cliente = null;
 
     /**
      * Creates new form InterfaceCliente
@@ -172,7 +172,7 @@ public class InterfaceClient extends javax.swing.JFrame {
         
         if(cliente != null){
             System.out.println("interfacemessage");
-            cliente.forwardMessage(jtsendMessage.getText(), jtListaClientes.getSelectedValue().toString());
+            cliente.forwardMessage(jtsendMessage.getText(), getJtListaClientes().getSelectedValue().toString());
         }
         
 // TODO add your handling code 
@@ -181,14 +181,14 @@ public class InterfaceClient extends javax.swing.JFrame {
     private void jbConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbConectarActionPerformed
 
         if (cliente == null) {
-            cliente = new TCPCliente(this, jtUsername.getText(), Integer.parseInt(jtPortServer.getText()), jtIpServer.getText());
+            cliente = new ClientCommunication(this, jtUsername.getText(), Integer.parseInt(jtPortServer.getText()), jtIpServer.getText());
             try {
                 if (!cliente.createConnection()) {
-                    jtAnswer.setText(jtAnswer.getText() + "\n" + "Conexao nao realizada");
+                    getJtAnswer().setText(getJtAnswer().getText() + "\n" + "Conexao nao realizada");
                     cliente = null;
                 } else {
-                    jbConectar.setText("Desconectar");
-                    jtAnswer.setText(jtAnswer.getText() + "\n" + "Bem vindo ao chat.");
+                    getJbConectar().setText("Desconectar");
+                    getJtAnswer().setText(getJtAnswer().getText() + "\n" + "Bem vindo ao chat.");
                     cliente.start();
                 }
             } catch (IOException ex) {
@@ -196,7 +196,7 @@ public class InterfaceClient extends javax.swing.JFrame {
             }
         } else {
             cliente.closeConnection();
-            jbConectar.setText("Conectar");
+            getJbConectar().setText("Conectar");
             cliente = null;
         }
     }//GEN-LAST:event_jbConectarActionPerformed
@@ -247,13 +247,55 @@ public class InterfaceClient extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField3;
-    protected javax.swing.JButton jbConectar;
+    private javax.swing.JButton jbConectar;
     private javax.swing.JButton jbEnviar;
-    protected javax.swing.JTextArea jtAnswer;
+    private javax.swing.JTextArea jtAnswer;
     private javax.swing.JTextField jtIpServer;
-    protected javax.swing.JList jtListaClientes;
+    private javax.swing.JList jtListaClientes;
     private javax.swing.JTextField jtPortServer;
     private javax.swing.JTextField jtUsername;
     private javax.swing.JTextField jtsendMessage;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the jtAnswer
+     */
+    public javax.swing.JTextArea getJtAnswer() {
+        return jtAnswer;
+    }
+
+    /**
+     * @param jtAnswer the jtAnswer to set
+     */
+    public void setJtAnswer(javax.swing.JTextArea jtAnswer) {
+        this.jtAnswer = jtAnswer;
+    }
+
+    /**
+     * @return the jbConectar
+     */
+    public javax.swing.JButton getJbConectar() {
+        return jbConectar;
+    }
+
+    /**
+     * @param jbConectar the jbConectar to set
+     */
+    public void setJbConectar(javax.swing.JButton jbConectar) {
+        this.jbConectar = jbConectar;
+    }
+
+    /**
+     * @return the jtListaClientes
+     */
+    public javax.swing.JList getJtListaClientes() {
+        return jtListaClientes;
+    }
+
+    /**
+     * @param jtListaClientes the jtListaClientes to set
+     */
+    public void setJtListaClientes(javax.swing.JList jtListaClientes) {
+        this.jtListaClientes = jtListaClientes;
+    }
 }
