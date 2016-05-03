@@ -2,7 +2,6 @@ package communication;
 
 // servidor de eco
 // recebe uma linha e ecoa a linha recebida.
-
 import java.io.*;
 import java.net.*;
 import utility.*;
@@ -31,15 +30,13 @@ public class ServerCommunication extends Thread {
     @Override
     public void run() {
         try {
-            
-            System.out.println("cheguei aqui please");
+
             dutoEntrada = new DataInputStream(socketCliente.getInputStream());    // aponta o duto de entrada para o socket do cliente
             dutoSaida = new PrintStream(socketCliente.getOutputStream());       // aponta o duto de saída para o socket do cliente
 
             //envia a mensagem de conexão ao cliente
 //            ServerManager.iServer.jtMessage.setText(ServerManager.iServer.jtMessage.getText() + "\n"
 //                    + "Nova conexao: " + socketCliente.getInetAddress().toString() + ":" + socketCliente.getPort());
-
 //            dutoSaida.println("Conexão efetuada com o servidor 127.0.0.1 Porta " + portaServidor);
             while (true) {
                 //aguarda recebimento de dados vindos do cliente
@@ -47,19 +44,22 @@ public class ServerCommunication extends Thread {
                 System.out.println(message);
                 if (message == null) {
                     ServerManager.iServer.getJtMessage().setText(ServerManager.iServer.getJtMessage().getText() + "\n"
-                          + "Cliente: "  + socketCliente.getInetAddress().toString() + ":" + socketCliente.getPort() + " desconectou." );
+                            + "Cliente: " + socketCliente.getInetAddress().toString() + ":" + socketCliente.getPort() + " desconectou.");
                     socketCliente.close();
                     this.stop();
-                }else{
-                    System.out.println("here");
-                   String[] splitMessage = message.split(";");
-                   if("01".equals(splitMessage[0])){
-                       if( FileManager.checkInFile(LOGIN, message)){
-                           dutoSaida.println("02;1");
-                       }else{
-                           dutoSaida.println("02;0");
-                       }
-                   }
+                } else {
+                    String[] splitMessage = message.split(";");
+                    if ("01".equals(splitMessage[0])) {
+                        if (splitMessage.length == 3) {
+                            if (FileManager.checkInFile(LOGIN, message)) {
+                                dutoSaida.println("02;1");
+                            } else {
+                                dutoSaida.println("02;0");
+                            }
+                        }
+                    }else{
+                        dutoSaida.println("00;Mensagem Invalida");
+                    }
                 }
                 //envia a mensagem em caixa alta
 //                answer = "ServerCommunication responde:  " + mensagem.toUpperCase();

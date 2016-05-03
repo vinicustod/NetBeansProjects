@@ -37,15 +37,18 @@ public class ClientCommunication extends Thread {
                 } else {
                     String[] splitMessage = message.split(";");
                     if ("02".equals(splitMessage[0])) {
-                        if ("1".equals(splitMessage[1])) {
-                            InterfaceMenu.createMenu();
-                            iCliente.setVisible(false);
-                        } else {
-                            iCliente.wrongUserPassword();
-                            this.closeConnection();
-                            System.out.println("teste");
+                        if (splitMessage.length == 2) {
+                            if ("1".equals(splitMessage[1])) {
+                                InterfaceMenu.createMenu();
+                                iCliente.setVisible(false);
+                            } else {
+                                iCliente.wrongUserPassword();
+                                this.closeConnection();
 
+                            }
                         }
+                    }else if("00".equals(splitMessage[0])){
+                        System.out.println("Erro: " + splitMessage[1]);
                     }
                 }
 
